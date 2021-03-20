@@ -14,10 +14,8 @@ class CookieParser {
   final List<Cookie> cookies = [];
 
   /// Creates a new [CookieParser] by parsing the `Cookie` header [value].
-  CookieParser.fromCookieValue(String value) {
-    if (value != null) {
-      cookies.addAll(_parseCookieString(value));
-    }
+  CookieParser.fromCookieValue(String? value) {
+    if (value != null) cookies.addAll(_parseCookieString(value));
   }
 
   /// Factory constructor to create a new instance from request [headers].
@@ -29,19 +27,24 @@ class CookieParser {
   bool get isEmpty => cookies.isEmpty;
 
   /// Retrieves a cookie by [name].
-  Cookie get(String name) => cookies
-      .firstWhere((Cookie cookie) => cookie.name == name, orElse: () => null);
+  Cookie? get(String name) {
+    try {
+      cookies.firstWhere((Cookie cookie) => cookie.name == name);
+    } on StateError catch (_) {
+      return null;
+    }
+  }
 
   /// Adds a new cookie to [cookies] list.
   Cookie set(
     String name,
     String value, {
-    String domain,
-    String path,
-    DateTime expires,
-    bool httpOnly,
-    bool secure,
-    int maxAge,
+    String? domain,
+    String? path,
+    DateTime? expires,
+    bool? httpOnly,
+    bool? secure,
+    int? maxAge,
   }) {
     var cookie = Cookie(name, value);
     if (domain != null) cookie.domain = domain;
@@ -77,11 +80,7 @@ class CookieParser {
   /// As of RFC 6265, this folded mechanism is deprecated in favour of
   /// a multi-header approach.
   ///
-  /// Unfortunately, Shelf doesn't currently support multiple headers
-  /// of the same type. This is an ongoing issue, but once resolved,
-  /// this method can be deprecated.
-  ///
-  /// https://github.com/dart-lang/shelf/issues/44
+  /// TODO: update to RFC 6265's multi-header approach
   String toString() {
     return cookies.fold(
       '',
@@ -95,7 +94,7 @@ class CookieParser {
 /// Parse a Cookie header value according to the rules in RFC 6265.
 /// This function was adapted from `dart:io`.
 List<Cookie> _parseCookieString(String s) {
-  var cookies = List<Cookie>();
+  var cookies = <Cookie>[];
 
   int index = 0;
 

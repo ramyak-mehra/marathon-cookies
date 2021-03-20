@@ -1,21 +1,26 @@
-# shelf_cookie
+# Marathon Cookies
 
-Cookie parser middleware for the Dart Shelf ecosystem.
+Marathon's cookie parser middleware for the Dart shelf ecosystem.
 Reads cookies in request, sets cookies in response.
 
 Adds a `CookieParser` instance to `request.context['cookies']` to help
 manipulate cookies.
 
+## Authorship
+
+This project was originally authored by [Izolate](https://github.com/izolate). It was forked by the Marathon
+organization, ported to null-safety, and adapted to new features in [shelf](https://pub.dev/packages/shelf).
+
 ## Example
 
 ```dart
 import 'dart:io';
-import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf/shelf.dart';
 import 'package:shelf_cookie/shelf_cookie.dart';
 
 /// Handle a request that contains a `Cookie` header.
 /// e.g. 'Cookie': 'ping=foo'
-var handler = const shelf.Pipeline()
+var handler = const Pipeline()
     // initialize cookie parser middleware
     .addMiddleware(cookieParser())
     .addHandler((req) async {
@@ -34,6 +39,6 @@ var handler = const shelf.Pipeline()
 
   // Middleware will add `Set-Cookie` response header.
   // e.g. 'Set-Cookie': 'pong=bar; Secure; HttpOnly'
-  return shelf.Response.ok('OK');
+  return Response.ok('OK');
 });
 ```
