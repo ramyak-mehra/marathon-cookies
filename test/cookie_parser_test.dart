@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:marathon_cookies/marathon_cookies.dart';
 import 'package:test/test.dart';
 
+// TODO: actually test server responses instead of just testing the parser
 void main() {
   test('isEmpty is true if header is empty', () {
     var cookies = CookieParser.fromCookieValue(null);

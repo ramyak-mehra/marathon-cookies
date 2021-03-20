@@ -9,7 +9,8 @@ manipulate cookies.
 ## Authorship
 
 This project was originally authored by [Izolate](https://github.com/izolate). It was forked by the Marathon
-organization, ported to null-safety, and adapted to new features in [shelf](https://pub.dev/packages/shelf).
+organization, ported to null-safety, and migrated to the RFC 6265 specification (it was using RFC 2109 before
+for adding responses, which is deprecated).
 
 ## Example
 
@@ -27,7 +28,7 @@ var handler = const Pipeline()
   CookieParser cookies = req.context['cookies'];
 
   // Retrieve request cookies.
-  var reqCookie = cookies.get('ping');
+  var reqCookie = cookies.get('ping')!;
   print(reqCookie.name); // foo
 
   // Clear cookies because Shelf currently only supports

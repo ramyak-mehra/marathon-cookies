@@ -29,23 +29,22 @@ class CookieParser {
   /// Retrieves a cookie by [name].
   Cookie? get(String name) {
     try {
-      cookies.firstWhere((Cookie cookie) => cookie.name == name);
+      return cookies.firstWhere((Cookie cookie) => cookie.name == name);
     } on StateError catch (_) {
       return null;
     }
   }
 
   /// Adds a new cookie to [cookies] list.
-  Cookie set(
-    String name,
-    String value, {
-    String? domain,
-    String? path,
-    DateTime? expires,
-    bool? httpOnly,
-    bool? secure,
-    int? maxAge,
-  }) {
+  Cookie set(String name,
+      String value, {
+        String? domain,
+        String? path,
+        DateTime? expires,
+        bool? httpOnly,
+        bool? secure,
+        int? maxAge,
+      }) {
     var cookie = Cookie(name, value);
     if (domain != null) cookie.domain = domain;
     if (path != null) cookie.path = path;
@@ -77,14 +76,17 @@ class CookieParser {
   /// cookies to be folded into a single `Set-Cookie` header value,
   /// separated by commas.
   ///
-  /// As of RFC 6265, this folded mechanism is deprecated in favour of
-  /// a multi-header approach.
-  ///
-  /// TODO: update to RFC 6265's multi-header approach
+  /// As of RFC 6265, this folding mechanism is deprecated in favour of
+  /// a multi-header approach. The multi-header approach is used by default in
+  /// the middleware, but this [toString] method is implemented according to the
+  /// RFC 2109 spec for testing purposes.
+  @Deprecated('This method folds all the currently stored cookies into one set-'
+      'cookie header. This behavior is deprecated by RFC 6265.')
   String toString() {
     return cookies.fold(
       '',
-      (prev, element) => prev.isEmpty
+          (prev, element) =>
+      prev.isEmpty
           ? element.toString()
           : '${prev.toString()}, ${element.toString()}',
     );

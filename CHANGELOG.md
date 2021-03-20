@@ -1,4 +1,14 @@
-# Changelog
+# Changelog (Marathon)
+## [0.1.1] - 2021-03-19
+### Changed
+- Middleware now adds multiple headers instead of folding all the cookies into one header.
+- Project is now using null-safety.
+
+___
+
+Below is the changelog kept by Izolate before the forking point. See README.md
+for more details.
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
