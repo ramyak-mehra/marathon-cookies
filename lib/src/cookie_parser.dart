@@ -36,15 +36,16 @@ class CookieParser {
   }
 
   /// Adds a new cookie to [cookies] list.
-  Cookie set(String name,
-      String value, {
-        String? domain,
-        String? path,
-        DateTime? expires,
-        bool? httpOnly,
-        bool? secure,
-        int? maxAge,
-      }) {
+  Cookie set(
+    String name,
+    String value, {
+    String? domain,
+    String? path,
+    DateTime? expires,
+    bool? httpOnly,
+    bool? secure,
+    int? maxAge,
+  }) {
     var cookie = Cookie(name, value);
     if (domain != null) cookie.domain = domain;
     if (path != null) cookie.path = path;
@@ -64,8 +65,19 @@ class CookieParser {
   }
 
   /// Removes a cookie from list by [name].
-  void remove(String name) =>
-      cookies.removeWhere((Cookie cookie) => cookie.name == name);
+  /// As of RFC 6265 to remove a cookie from client we need to set the expiry date before current date.
+  void remove(String name) {
+    DateTime expires = DateTime.utc(1970, 11, 9);
+
+    var retrievedCookies =
+        cookies.where((Cookie cookie) => cookie.name == name);
+    if (retrievedCookies.length == 0) {
+      throw Exception('Cookie does not exsist');
+    } else if (retrievedCookies.length > 1) {
+      throw Exception('Multiple Cookies with the same name exsist');
+    }
+    retrievedCookies.first.expires = expires;
+  }
 
   /// Clears the cookie list.
   void clear() => cookies.clear();
@@ -85,8 +97,7 @@ class CookieParser {
   String toString() {
     return cookies.fold(
       '',
-          (prev, element) =>
-      prev.isEmpty
+      (prev, element) => prev.isEmpty
           ? element.toString()
           : '${prev.toString()}, ${element.toString()}',
     );
